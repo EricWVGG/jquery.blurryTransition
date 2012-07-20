@@ -7,8 +7,8 @@
       'canvas' : null,
       'cycle' : null,
       'i' : 0,
-      'interval' : 3000,
-      'css_transition_speed' : '1s',
+      'interval' : 12000,
+      'css_transition_speed' : '0.7s',
       'blur_mode' : 'boxBlurImage',
       'z_index' : 100
     }, arguments);
@@ -28,34 +28,39 @@
             var $img = $list.find('li:first-child img');
             img = new Image();
             img.onload = function() {
-              $list.css({
-                'width' : img.width + 'px',
-                'height' : img.height + 'px'
-              });
-              $list.find('li').each(function(i,n) {
-                $(n).css({ 'z-index' : properties.z_index });
-                $(n).find('img').attr('id', 'blurryTransition_canvas_'+i);
-                properties.z_index++;
-              });
-              $canvas = $('<canvas/>');
-              $canvas.attr({
-                id : 'blurryTransition_canvas_c1',
-                width : img.width,
-                height : img.height
-              }).css({
-                '-webkit-transition-property' : 'opacity',
-                '-webkit-transition-duration' : properties.css_transition_speed,
-                '-webkit-transition-timing-function' : 'linear',
-                'z-index' : properties.z_index,
-              });
-              $list.before($canvas);
-              $canvas_2 = $canvas.clone();
-              $canvas_2.attr({
-                id : 'blurryTransition_canvas_c2',
-              }).css({
-                'z-index' : properties.z_index + 1,
-              });
-              $list.before($canvas_2);
+              // set up slides
+                $list.css({
+                  'width' : img.width + 'px',
+                  'height' : img.height + 'px'
+                });
+                $list.find('li').each(function(i,n) {
+                  $(n).css({ 'z-index' : properties.z_index });
+                  $(n).find('img').attr('id', 'blurryTransition_canvas_'+i);
+                  properties.z_index++;
+                });
+              // set up first canvas
+                $canvas = $('<canvas/>');
+                $canvas.attr({
+                  id : 'blurryTransition_canvas_c1',
+                  width : img.width,
+                  height : img.height
+                }).css({
+                  '-webkit-transition-property' : 'opacity',
+                  '-webkit-transition-duration' : properties.css_transition_speed,
+                  '-webkit-transition-timing-function' : 'linear',
+                  'z-index' : properties.z_index,
+                  'position' : 'absolute',
+                  'opacity' : 0,
+                });
+                $list.before($canvas);
+              // set up second canvas
+                $canvas_2 = $canvas.clone();
+                $canvas_2.attr({
+                  id : 'blurryTransition_canvas_c2',
+                }).css({
+                  'z-index' : properties.z_index + 1,
+                });
+                $list.before($canvas_2);
             }
             img.src = $img.attr('src');
             methods.startCycle();
@@ -70,23 +75,25 @@
           clearInterval(properties.cycle);
         },
         shiftImage : function() {
-          a = properties.i;
-          b = properties.i+1;
-          if(b >= $list.find('li').length) b = 0;
-          methods.shiftImageTo(a,b);
+          next_i = properties.i+1;
+          if(next_i >= $list.find('li').length) next_i = 0;
+          methods.shiftImageTo(next_i);
         },
-        shiftImageTo : function(a, b) {
-    			boxBlurImage( 'blurryTransition_canvas_'+a, 'blurryTransition_canvas_c1', 40, false, 1 );
-          if(b > $list.find('li').length) b = 0;
-    			boxBlurImage( 'blurryTransition_canvas_'+b, 'blurryTransition_canvas_c2', 40, false, 1 );
+        shiftImageTo : function(destination_frame) {
+    			boxBlurImage( 'blurryTransition_canvas_'+properties.i, 'blurryTransition_canvas_c1', 40, false, 1 );
+          if(destination_frame > $list.find('li').length) b = 0;
+    			boxBlurImage( 'blurryTransition_canvas_'+destination_frame, 'blurryTransition_canvas_c2', 40, false, 1 );
           $('#blurryTransition_canvas_c1').removeClass('fast').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
-            $list.find('li:nth-child('+(a+1)+')').addClass('hidden');
-            $list.find('li:nth-child('+(b+1)+')').removeClass('hidden');
-  					$('#blurryTransition_canvas_c2').addClass('slow').unbind().css('opacity', 0);
-  					$('#blurryTransition_canvas_c1').addClass('fast').unbind().css('opacity', 0);
-            properties.i = b;
+            $('#blurryTransition_canvas_c1').unbind().css('opacity', 0);
+            $list.find('li:nth-child('+(properties.i+1)+')').addClass('hidden');
+            $('#blurryTransition_canvas_c2').removeClass('slow').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
+              $('#blurryTransition_canvas_c2').unbind();
+              // note: confusing? i+1 because CSS indexes from 1, not 0
+              $list.find('li:nth-child('+(destination_frame+1)+')').removeClass('hidden');
+    					$('#blurryTransition_canvas_c2').addClass('slow').css('opacity', 0);
+              properties.i = destination_frame;
+            }).css('opacity', 1);
           }).css('opacity', 1);
-          $('#blurryTransition_canvas_c2').removeClass('slow').css('opacity', 1);
         }
       };
   
