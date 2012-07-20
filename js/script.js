@@ -69,6 +69,7 @@
         shiftImage : function() {
           a = properties.i;
           b = properties.i+1;
+          if(b >= $list.find('li').length) b = 0;
           methods.shiftImageTo(a,b);
         },
         shiftImageTo : function(a, b) {
@@ -80,8 +81,7 @@
             $list.find('li:nth-child('+(b+1)+')').removeClass('hidden');
   					$('#blurryTransition_blur_c2').addClass('slow').unbind().css('opacity', 0);
   					$('#blurryTransition_blur_c1').addClass('fast').unbind().css('opacity', 0);
-            properties.i++;
-            if(properties.i >= $list.find('li').length) properties.i = 0;
+            properties.i = b;
           }).css('opacity', 1);
           $('#blurryTransition_blur_c2').removeClass('slow').css('opacity', 1);
         }
