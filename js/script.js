@@ -9,6 +9,8 @@
       'i' : 0,
       'interval' : 3000,
       'css_transition_speed' : '1s',
+      'blur_mode' : 'boxBlurImage',
+      'z_index' : 100
     }, arguments);
 
     return this.each(function() {
@@ -31,26 +33,27 @@
                 'height' : img.height + 'px'
               });
               $list.find('li').each(function(i,n) {
-                $(n).css({
-                  'z-index' : i
-                });
-                $(n).find('img').attr('id', 'blurryTransition_blur_'+i);
+                $(n).css({ 'z-index' : properties.z_index });
+                $(n).find('img').attr('id', 'blurryTransition_canvas_'+i);
+                properties.z_index++;
               });
               $canvas = $('<canvas/>');
               $canvas.attr({
-                id : 'blurryTransition_blur_c1',
+                id : 'blurryTransition_canvas_c1',
                 width : img.width,
                 height : img.height
-              });
-              $canvas.css({
+              }).css({
                 '-webkit-transition-property' : 'opacity',
                 '-webkit-transition-duration' : properties.css_transition_speed,
-                '-webkit-transition-timing-function' : 'linear'
+                '-webkit-transition-timing-function' : 'linear',
+                'z-index' : properties.z_index,
               });
               $list.before($canvas);
               $canvas_2 = $canvas.clone();
               $canvas_2.attr({
-                id : 'blurryTransition_blur_c2',
+                id : 'blurryTransition_canvas_c2',
+              }).css({
+                'z-index' : properties.z_index + 1,
               });
               $list.before($canvas_2);
             }
@@ -73,17 +76,17 @@
           methods.shiftImageTo(a,b);
         },
         shiftImageTo : function(a, b) {
-    			boxBlurImage( 'blurryTransition_blur_'+a, 'blurryTransition_blur_c1', 40, false, 1 );
+    			boxBlurImage( 'blurryTransition_canvas_'+a, 'blurryTransition_canvas_c1', 40, false, 1 );
           if(b > $list.find('li').length) b = 0;
-    			boxBlurImage( 'blurryTransition_blur_'+b, 'blurryTransition_blur_c2', 40, false, 1 );
-          $('#blurryTransition_blur_c1').removeClass('fast').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
+    			boxBlurImage( 'blurryTransition_canvas_'+b, 'blurryTransition_canvas_c2', 40, false, 1 );
+          $('#blurryTransition_canvas_c1').removeClass('fast').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
             $list.find('li:nth-child('+(a+1)+')').addClass('hidden');
             $list.find('li:nth-child('+(b+1)+')').removeClass('hidden');
-  					$('#blurryTransition_blur_c2').addClass('slow').unbind().css('opacity', 0);
-  					$('#blurryTransition_blur_c1').addClass('fast').unbind().css('opacity', 0);
+  					$('#blurryTransition_canvas_c2').addClass('slow').unbind().css('opacity', 0);
+  					$('#blurryTransition_canvas_c1').addClass('fast').unbind().css('opacity', 0);
             properties.i = b;
           }).css('opacity', 1);
-          $('#blurryTransition_blur_c2').removeClass('slow').css('opacity', 1);
+          $('#blurryTransition_canvas_c2').removeClass('slow').css('opacity', 1);
         }
       };
   
@@ -113,13 +116,13 @@ $(function() {
 			var new_dimensions = size_image_to_screen($image.data('original_x'), $image.data('original_y'));
 			var crop = crop_image_to_screen(new_dimensions);
 			// set transition image to image
-			$('#the_image, #the_blur, #the_blur_image')
+			$('#the_image, #the_blur, #the_canvas_image')
 				.css('margin-top', 'auto')
 				.css('margin-left', 'auto')
 				.css(crop.side,crop.amount)
 				.attr('width', new_dimensions.x)
 				.attr('height', new_dimensions.y);
-			boxBlurImage( 'the_blur_image', 'the_blur', 40, false, 1 );
+			boxBlurImage( 'the_canvas_image', 'the_blur', 40, false, 1 );
 		});
 	});
 */
@@ -140,7 +143,7 @@ function switch_backgrounds() {
 		var crop = crop_image_to_screen(new_dimensions);
 		
 		// set transition image to image
-		$('#the_blur_image')
+		$('#the_canvas_image')
 			.css(crop.side,crop.amount)
 			.attr('width', new_dimensions.x)
 			.attr('height', new_dimensions.y)
@@ -157,11 +160,11 @@ function switch_backgrounds() {
 				.data('original_y', original_y);
 			
 			// blur the image, make visible
-			boxBlurImage( 'the_blur_image', 'the_blur', 40, false, 1 );
+			boxBlurImage( 'the_canvas_image', 'the_blur', 40, false, 1 );
 			$('#the_blur')
 				.css(crop.side,crop.amount)
-				.css('width', $('#the_blur_image').css('width'))
-				.css('height', $('#the_blur_image').css('height'))
+				.css('width', $('#the_canvas_image').css('width'))
+				.css('height', $('#the_canvas_image').css('height'))
 				.bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
 					$('#the_blur').unbind();
 					$('#the_image')
