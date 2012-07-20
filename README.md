@@ -1,0 +1,4 @@
+jquery.blurryTransitions
+========================
+
+Blurry transitions
