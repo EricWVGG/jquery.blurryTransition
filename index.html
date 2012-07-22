@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>Siege</title>
+  <title>jquery.blurryTransition</title>
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -16,26 +16,43 @@
   <script src="js/libs/modernizr-2.0.6.min.js"></script>
   
   <style type="text/css">
-    #images {
-      margin:0; padding:0;  
+    body, html {
+      height:100%;
     }
-    
-    #images li {
-      margin:0; 
-      padding:0;  
-      position:absolute;
-    }
-    
+
     .fast {
       -webkit-transition-duration: 0s !important;
     }
     .slow {
       -webkit-transition-duration: 2s !important;
     }
+    header {
+      position:fixed;
+      z-index:1000;
+      top:20px; left:20px; 
+      background-color:white;
+      padding:20px;
+    }
+    
+    #images {
+      margin:0;
+      padding:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      display:block;
+      outline:1px dotted red;
+    }
+    
   </style>
 </head>
 
 <body>
+
+  <header>
+    <h1>jquery.blurryTransition demo</h1>
+    <p>by Eric Jacobsen</p>
+  </header>
 
 	<ul id="images">
 	  <li><img src="img/siege_1.jpg" width="1200" height="900"></li>
