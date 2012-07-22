@@ -67,58 +67,43 @@ td { vertical-align: top; }
 
 
 
-a {
-  border:0px;
-  outline:0px;
-  text-decoration:none;
-}
+    body, html {
+      height:100%;
+    }
 
-#the_image {
-  z-index:10;
-  position:fixed;
-  top:0px;
-  left:0px;
-  background-repeat:no-repeat;
-}
-
-#the_blur {
-  z-index:20;
-  position:fixed;
-  top:0px;
-  left:0px;
-  opacity:0;
-  -webkit-transition:opacity 3s linear;
-  -moz-transition:opacity 3s linear;
-  -o-transition:opacity 3s linear;
-  -ms-transition:opacity 3s linear;
-  transition:opacity 3s linear;
-}
-#the_blur.visible {
-  opacity:1;
-}
-
-#the_blur_image {
-  position:absolute;
-  z-index:5;
-  display:none;
-}
-
-
-#container {
-  position:fixed;
-  left:40px;
-  bottom:40px;
-  z-index:99999;
-  text-indent:-1000px;
-  overflow:hidden;
-  background:url('../img/siege_menu.png');
-  width:350px;
-  height:265px;
-}
-
-li.hidden {
-  opacity:0;
-}
+    .fast {
+      -webkit-transition-duration: 0s !important;
+    }
+    .slow {
+      -webkit-transition-duration: 2s !important;
+    }
+    header {
+      position:absolute;
+      z-index:1000;
+      top:20px; left:20px; 
+      background-color:white;
+      padding:20px;
+    }
+    
+    #slideshow {
+      position:fixed;
+      margin:0;
+      padding:0;
+    }
+    
+    article {
+      font-size:0.8em;
+      position:absolute;
+      z-index:1000;
+      top:250px; left:20px; 
+      background-color:rgba(255,255,255,0.1);
+      padding:20px;
+      -webkit-transition:background-color 0.1s linear;
+    }
+    
+    article:hover {
+      background-color:white;
+    }
 
 
 /* Smartphones (portrait and landscape) ----------- */

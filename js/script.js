@@ -10,13 +10,13 @@
  * transition slideshow.
  *
  * usage example: 
- *   <ul id="foo">
+ *   <ul id="slideshow">
  *     <li><img src="someimage_1.jpg"></li>
  *     <li><img src="someimage_2.jpg"></li>
  *     <li><img src="someimage_3.jpg"></li>
  *   </ul>
  *   <script type="text/javascript">
- *     $('#foo').blurryTransition({width:'100%', height:'100%'});
+ *     $('#slideshow').blurryTransition({width:'100%', height:'100%'});
  *   </script>
  * 
  * The width and height dimensions are optional if expressed in CSS as
@@ -84,10 +84,13 @@
                 height: properties.height,
                 display: $list.css('display'),
                 overflow: 'hidden',
-                position: 'relative',
+                position: $list.css('position'),
+              });
+              $list.css({
+                position : 'relative',
               });
             // hide all images except first one
-              $list.find('li').not('li:first-child').addClass('hidden');
+              $list.find('li').not('li:first-child').css('opacity', 0);
             // retrieve image dimensions to set up canvases
               var $img = $list.find('li:first-child img');
               first_img = new Image();
@@ -188,14 +191,14 @@
           // "blur" the current image (fade in its blurred canvas)
           $('#blurryTransition_canvas_c1').removeClass('fast').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
             // hide the current image
-            $list.find('li:nth-child('+(cycle_index+1)+')').addClass('hidden');
+            $list.find('li:nth-child('+(cycle_index+1)+')').css('opacity', 0);
             // simultaneously fade out that blurred canvas…
             $('#blurryTransition_canvas_c1').unbind().css('opacity', 0);
             // … and fade in the new blurred image canvas
             $('#blurryTransition_canvas_c2').removeClass('slow').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
               $('#blurryTransition_canvas_c2').unbind();
               // unhide the new image
-              $list.find('li:nth-child('+(destination_frame+1)+')').removeClass('hidden');
+              $list.find('li:nth-child('+(destination_frame+1)+')').css('opacity', 1);
     					// and finally fade out the new blurred image canvas
     					$('#blurryTransition_canvas_c2').addClass('slow').css('opacity', 0);
               cycle_index = destination_frame;
@@ -210,14 +213,6 @@
 
   };
 })(jQuery);
-
-$(window).load(function() {
-  $('#images').blurryTransition({
-    width : '100%',
-    height : '100%'
-  });
-});
-
 
 
 

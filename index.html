@@ -15,45 +15,50 @@
 
   <script src="js/libs/modernizr-2.0.6.min.js"></script>
   
-  <style type="text/css">
-    body, html {
-      height:100%;
-    }
-
-    .fast {
-      -webkit-transition-duration: 0s !important;
-    }
-    .slow {
-      -webkit-transition-duration: 2s !important;
-    }
-    header {
-      position:fixed;
-      z-index:1000;
-      top:20px; left:20px; 
-      background-color:white;
-      padding:20px;
-    }
-    
-    #images {
-      margin:0;
-      padding:0;
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      display:block;
-    }
-    
-  </style>
 </head>
 
 <body>
 
   <header>
     <h1>jquery.blurryTransition demo</h1>
-    <p>by Eric Jacobsen</p>
+    <h2>by <a href="http://whiskyvangoghgo.com">Eric Jacobsen</a></h2>
+    <p>Project home: <a href="http://whiskyvangoghgo.com/projects/blurryTransition">http://whiskyvangoghgo.com/projects/blurryTransition</a></p>
+    <p>Download: <a href="https://github.com/EricWVGG/jquery.blurryTransition">https://github.com/EricWVGG/jquery.blurryTransition</a></p>
   </header>
+  
+  <article>
+    <h2>Directions</h2>
+    <p>Create a list of images and initiate the javascript.</p>
+    
+    <h2>Example</h2>
+    <pre>
+&lt;ul id="slideshow"&gt;
+  &lt;li&gt;&lt;img src="someimage_1.jpg"&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;img src="someimage_2.jpg"&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;img src="someimage_3.jpg"&gt;&lt;/li&gt;
+&lt;/ul>
+&lt;script type="text/javascript"&gt;
+  $(function() {
+    $('#slideshow').blurryTransition({width:'100%', height:'100%'});
+  });
+&lt;/script&gt;
+    </pre>
+  
+    <h2>Default Settings</h2>
+    <pre>
+$('.my_frame').magnifyingFrame({
+  'interval' : 12000,
+    <span>/* interval between image shifts */</span>
+  'css_transition_speed' : '0.7s',
+    <span>/* speed of blurring transition */</span>
+  'width' : null,
+  'height' : null
+    <span>/* optional, but must be declared if the value is a percentage */</span>
+});
+    </pre>
+  </article>
 
-	<ul id="images">
+	<ul id="slideshow">
 	  <li><img src="img/siege_1.jpg" width="1200" height="900"></li>
 	  <li><img src="img/siege_2.jpg" width="1200" height="900"></li>
 	  <li><img src="img/siege_3.jpg" width="1200" height="900"></li>
@@ -70,7 +75,14 @@
   <script type="text/javascript" src="js/stackBlur.js"></script>
   <script type="text/javascript" src="js/plugins.js"></script>
   <script type="text/javascript" src="js/script.js"></script>
-
+  <script type="text/javascript">
+    $(window).load(function() {
+      $('#slideshow').blurryTransition({
+        width : '100%',
+        height : '100%'
+      });
+    });
+  </script>
 
   <!--[if lt IE 9 ]>
     <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
