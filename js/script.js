@@ -12,14 +12,16 @@
       'blur_mode' : 'boxBlurImage',
       'z_index' : 100,
       'width' : null,
-      'height' : null
+      'height' : null,
+      'offset' : {}
     }, arguments);
 
     return this.each(function() {
 
       var $image_index = 0,
         $list = '',
-        $canvas = '';
+        $canvas = '',
+        first_img;
       
       var methods = {
         init : function(options) {
@@ -39,35 +41,25 @@
               $list.find('li').not('li:first-child').addClass('hidden');
             // retrieve image dimensions to set up canvases
               var $img = $list.find('li:first-child img');
-              img = new Image();
-              img.onload = function() {
+              first_img = new Image();
+              first_img.onload = function() {
                 // calculate image cover sizes
-                  var adjusted_size = size_image_to_screen(img.width,img.height,$list),
-                    offsetLeft = 0,
-                    offsetTop = 0;
+                  var adjusted_size = size_image_to_screen(first_img.width,first_img.height,$list);
                 // set up slides
                   $list.find('li').each(function(i,n) {
                     $(n).find('img').css({
                       'width':adjusted_size.x,
                       'height':'auto',
                     });
-                    if(adjusted_size.x > $list.width()) {
-                      offsetLeft = (adjusted_size.x-$list.width()) / 2;
-                      offsetTop = 0;
-                    }
-                    else if(adjusted_size.y > $list.height()) {
-                      offsetTop = (adjusted_size.y-$list.height()) / 2;
-                      offsetLeft = 0;
-                    }
+                    properties.offset = crop_image_to_screen(adjusted_size);
+                    var side = properties.offset.side;
                     $(n).css({ 
                       'margin' : 0,
                       'padding' : 0,
                       'position' : 'absolute',
                       'top' : '0px',
                       'z-index' : properties.z_index,
-                      'margin-left' : - offsetLeft,
-                      'margin-top' : - offsetTop,
-                    });
+                    }).css(properties.offset.side, properties.offset.amount);
                     $(n).addClass('blurryTransition_frame').find('img').attr('id', 'blurryTransition_canvas_'+i);
                     properties.z_index++;
                   });
@@ -75,8 +67,9 @@
                   $canvas = $('<canvas/>');
                   $canvas.attr({
                     id : 'blurryTransition_canvas_c1',
-                    width : img.width,
-                    height : img.height
+                    class : 'blurryTransition_canvas',
+                    width : first_img.width,
+                    height : first_img.height
                   }).css({
                     'width' : adjusted_size.x + 'px !important',
                     'height' : adjusted_size.y + 'px !important',
@@ -85,10 +78,8 @@
                     '-webkit-transition-timing-function' : 'ease-out',
                     'z-index' : properties.z_index,
                     'position' : 'absolute',
-                    'margin-left' : - offsetLeft,
-                    'margin-top' : - offsetTop,
                     'opacity' : 0,
-                  });
+                  }).css(properties.offset.side, properties.offset.amount);
                   $list.before($canvas);
                 // set up second canvas
                   $canvas_2 = $canvas.clone();
@@ -100,10 +91,47 @@
                   $list.before($canvas_2);
                 
               }
-              img.src = $img.attr('src');
+              first_img.src = $img.attr('src');
+              methods.bind_window_resize();
               methods.startCycle();
             });
           // done setting up canvases
+        },
+        bind_window_resize : function() {
+
+        	$(window).resize(function(){
+              var $img = $list.find('li:first-child img');
+              first_img = new Image();
+              first_img.onload = function() {
+                // calculate image cover sizes
+                  var adjusted_size = size_image_to_screen(first_img.width,first_img.height,$list);
+                // set up slides
+                  $list.find('li').each(function(i,n) {
+                    $(n).find('img').css({
+                      'width':adjusted_size.x,
+                      'height':'auto',
+                    });
+                    properties.offset = crop_image_to_screen(adjusted_size);
+                    $(n).css({ 
+                      'margin' : 0,
+                      'padding' : 0,
+                      'position' : 'absolute',
+                      'top' : '0px',
+                      'z-index' : properties.z_index
+                    }).css(properties.offset.side, properties.offset.amount);
+                    $(n).addClass('blurryTransition_frame').find('img').attr('id', 'blurryTransition_canvas_'+i);
+                    properties.z_index++;
+                  });
+                // set up first canvas
+                  $('.blurryTransition_canvas').css({
+                    'width' : adjusted_size.x + 'px !important',
+                    'height' : adjusted_size.y + 'px !important',
+                  }).css(properties.offset.side, properties.offset.amount);
+                
+              }
+              first_img.src = $img.attr('src');
+        	});
+
         },
         startCycle : function() {
           properties.cycle = setInterval(function() {
@@ -160,30 +188,6 @@ $(window).load(function() {
 
 
 
-
-
-$(function() {
-/*   switch_backgrounds();   */
-
-/*
-	$(window).resize(function(){
-		$(window).stopTime('resize').oneTime('0.1s', 'resize', function() {
-			var $image = $('#the_image');
-			var new_dimensions = size_image_to_screen($image.data('original_x'), $image.data('original_y'));
-			var crop = crop_image_to_screen(new_dimensions);
-			// set transition image to image
-			$('#the_image, #the_blur, #the_canvas_image')
-				.css('margin-top', 'auto')
-				.css('margin-left', 'auto')
-				.css(crop.side,crop.amount)
-				.attr('width', new_dimensions.x)
-				.attr('height', new_dimensions.y);
-			boxBlurImage( 'the_canvas_image', 'the_blur', 40, false, 1 );
-		});
-	});
-*/
-
-});
 
 
 
