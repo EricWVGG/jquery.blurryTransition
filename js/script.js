@@ -1,3 +1,49 @@
+/*
+ * jQuery Blurry Transition plugin
+ *   http://whiskyvangoghgo.com/projects/blurryTransition
+ *
+ * This script REQUIRES the stackBlurImage() script by Mario Klingemann.
+ *  http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html
+ * 
+ *
+ * Takes an unordered list of images and simulates and image-blurring
+ * transition slideshow.
+ *
+ * usage example: 
+ *   <ul id="foo">
+ *     <li><img src="someimage_1.jpg"></li>
+ *     <li><img src="someimage_2.jpg"></li>
+ *     <li><img src="someimage_3.jpg"></li>
+ *   </ul>
+ *   <script type="text/javascript">
+ *     $('#foo').blurryTransition({width:'100%', height:'100%'});
+ *   </script>
+ * 
+ * The width and height dimensions are optional if expressed in CSS as
+ * pixels; however, percentage dimensions must be declared.
+ *
+ * For best results, I suggest width and height values of 100% for a 
+ * background "cover."
+ * 
+ *
+ * I hope this plugin is fun and useful for you. Please email me with
+ * examples of use and suggestions.
+ * 
+ * Copyright (c) 2012 Eric Jacobsen <eric@whiskyvangoghgo.com>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
 
 (function($) {
   $.fn.blurryTransition = function(arguments) {
@@ -5,20 +51,18 @@
     var properties = $.extend({
       'interval' : 12000,
       'css_transition_speed' : '0.7s',
-      'blur_mode' : 'boxBlurImage',
       'width' : null,
       'height' : null
     }, arguments);
 
     return this.each(function() {
 
-      var $image_index = 0,
-        cycle_index = 0,
-        z_index = 100,
-        $list = '',
+      var $list = '',
         $canvas = '',
+        z_index = 100,
         first_img = null,
         offset = {},
+        cycle_index = 0,
         cycle = null;
       
       var methods = {
@@ -138,9 +182,9 @@
         shiftImageTo : function(destination_frame) {
           // note: confusing? i+1 because CSS indexes from 1, not 0
     			// prepare blurred image canvases
-      			boxBlurImage( 'blurryTransition_canvas_'+cycle_index, 'blurryTransition_canvas_c1', 40, false, 1 );
+      			stackBlurImage( 'blurryTransition_canvas_'+cycle_index, 'blurryTransition_canvas_c1', 40, false );
             if(destination_frame > $list.find('li').length) b = 0;
-      			boxBlurImage( 'blurryTransition_canvas_'+destination_frame, 'blurryTransition_canvas_c2', 40, false, 1 );
+      			stackBlurImage( 'blurryTransition_canvas_'+destination_frame, 'blurryTransition_canvas_c2', 40, false );
           // "blur" the current image (fade in its blurred canvas)
           $('#blurryTransition_canvas_c1').removeClass('fast').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
             // hide the current image
