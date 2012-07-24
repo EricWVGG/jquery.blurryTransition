@@ -105,14 +105,16 @@
                     });
                     offset = crop_image_to_screen(adjusted_size, $list);
                     var side = offset.side;
-                    $(n).css({ 
-                      'margin' : 0,
-                      'padding' : 0,
-                      'position' : 'absolute',
-                      'top' : '0px',
-                      'z-index' : z_index,
-                    }).css(offset.side, offset.amount);
-                    $(n).addClass('blurryTransition_frame').find('img').attr('id', 'blurryTransition_canvas_'+i);
+                    $(n).css(offset.side, offset.amount)
+                      .css({ 
+                        'margin' : 0,
+                        'padding' : 0,
+                        'position' : 'absolute',
+                        'top' : '0px',
+                        'z-index' : z_index,
+                      })
+                      .addClass('blurryTransition_frame')
+                      .find('img').attr('id', 'blurryTransition_canvas_'+i);
                     z_index++;
                   });
                 // set up first canvas
@@ -204,6 +206,7 @@
               cycle_index = destination_frame;
             }).css('opacity', 1);
           }).css('opacity', 1);
+// todo: optional simualtenous mode?
         }
       };
   
