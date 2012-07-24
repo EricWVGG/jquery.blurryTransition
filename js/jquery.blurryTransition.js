@@ -63,7 +63,8 @@
         first_img = null,
         offset = {},
         cycle_index = 0,
-        cycle = null;
+        cycle = null,
+        adjusted_size = {};
       
       var methods = {
         init : function(options) {
@@ -99,7 +100,7 @@
               first_img = new Image();
               first_img.onload = function() {
                 // calculate image cover sizes
-                  var adjusted_size = size_image_to_screen(first_img.width,first_img.height,$list);
+                  adjusted_size = size_image_to_screen(first_img.width,first_img.height,$list);
                 // set up slides
                   $list.find('li').each(function(i,n) {
                     $(n).find('img').css({
@@ -124,14 +125,26 @@
                   $canvas.attr({
                     id : 'blurryTransition_canvas_c1',
                     class : 'blurryTransition_canvas',
-                    width : first_img.width,
-                    height : first_img.height
+                    width : adjusted_size.x,
+                    height : adjusted_size.y
                   }).css({
                     'width' : adjusted_size.x + 'px !important',
                     'height' : adjusted_size.y + 'px !important',
                     '-webkit-transition-property' : 'opacity',
                     '-webkit-transition-duration' : (properties.css_transition_speed * 0.8) + 's',
                     '-webkit-transition-timing-function' : 'ease-out',
+                    '-moz-transition-property' : 'opacity',
+                    '-moz-transition-duration' : (properties.css_transition_speed * 0.8) + 's',
+                    '-moz-transition-timing-function' : 'ease-out',
+                    '-ms-transition-property' : 'opacity',
+                    '-ms-transition-duration' : (properties.css_transition_speed * 0.8) + 's',
+                    '-ms-transition-timing-function' : 'ease-out',
+                    '-o-transition-property' : 'opacity',
+                    '-o-transition-duration' : (properties.css_transition_speed * 0.8) + 's',
+                    '-o-transition-timing-function' : 'ease-out',
+                    'transition-property' : 'opacity',
+                    'transition-duration' : (properties.css_transition_speed * 0.8) + 's',
+                    'transition-timing-function' : 'ease-out',
                     'z-index' : z_index,
                     'position' : 'absolute',
                     'opacity' : 0,
@@ -144,6 +157,10 @@
                   }).css({
                     'z-index' : z_index + 1,
                     '-webkit-transition-duration' : (properties.css_transition_speed) + 's',
+                    '-moz-transition-duration' : (properties.css_transition_speed) + 's',
+                    '-ms-transition-duration' : (properties.css_transition_speed) + 's',
+                    '-o-transition-duration' : (properties.css_transition_speed) + 's',
+                    'transition-duration' : (properties.css_transition_speed) + 's',
                   });
                   $list.before($canvas_2);
                 
@@ -157,7 +174,7 @@
         bind_window_resize : function() {
         	$(window).resize(function(){
             // calculate image cover sizes
-              var adjusted_size = size_image_to_screen(first_img.width,first_img.height,$list);
+              adjusted_size = size_image_to_screen(first_img.width,first_img.height,$list);
               offset = crop_image_to_screen(adjusted_size, $list);
             // adjust slides
               $list.find('li').each(function(i,n) {
@@ -169,9 +186,11 @@
               });
             // adjust canvas
               $('.blurryTransition_canvas').css({
-                'width' : adjusted_size.x + 'px !important',
-                'height' : adjusted_size.y + 'px !important',
-              }).css(offset.side, offset.amount);
+                'width' : adjusted_size.x + 'px',
+                'height' : adjusted_size.y + 'px',
+              }).css(offset.side, offset.amount)
+              .attr('width', adjusted_size.x)
+              .attr('height', adjusted_size.y);
         	});
         },
         startCycle : function() {
@@ -193,14 +212,18 @@
       			stackBlurImage( 'blurryTransition_canvas_'+cycle_index, 'blurryTransition_canvas_c1', 40, false );
             if(destination_frame > $list.find('li').length) b = 0;
       			stackBlurImage( 'blurryTransition_canvas_'+destination_frame, 'blurryTransition_canvas_c2', 40, false );
+      		// mozilla resizes the canvases to the source image size. Stupid mozilla.
+      		  $('.blurryTransition_canvas')
+              .css('width', adjusted_size.x + 'px')
+              .css('height', adjusted_size.y + 'px');
           // "blur" the current image (fade in its blurred canvas)
-          $('#blurryTransition_canvas_c1').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
+          $('#blurryTransition_canvas_c1').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd', function() {
             // hide the current image
             $list.find('li:nth-child('+(cycle_index+1)+')').css('opacity', 0);
             // simultaneously fade out that blurred canvas…
             $('#blurryTransition_canvas_c1').unbind().css('opacity', 0);
             // … and fade in the new blurred image canvas
-            $('#blurryTransition_canvas_c2').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
+            $('#blurryTransition_canvas_c2').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd', function() {
               $('#blurryTransition_canvas_c2').unbind();
               // unhide the new image
               $list.find('li:nth-child('+(destination_frame+1)+')').css('opacity', 1);
