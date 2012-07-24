@@ -22,8 +22,8 @@
   <header>
     <h1>jquery.blurryTransition demo</h1>
     <h2>by <a href="http://whiskyvangoghgo.com">Eric Jacobsen</a></h2>
-    <p>Project home: <a href="http://whiskyvangoghgo.com/projects/blurryTransitions">http://whiskyvangoghgo.com/projects/jquery.blurryTransitions</a></p>
-    <p>Download: <a href="https://github.com/EricWVGG/jquery.blurryTransitions">https://github.com/EricWVGG/jquery.blurryTransitions</a></p>
+    <p>Project home: <a href="http://whiskyvangoghgo.com/projects/blurryTransitions">http://whiskyvangoghgo.com/projects/jquery.blurryTransition</a></p>
+    <p>Download: <a href="https://github.com/EricWVGG/jquery.blurryTransitions">https://github.com/EricWVGG/jquery.blurryTransition</a></p>
   </header>
   
   <article>
@@ -48,9 +48,9 @@
     <pre>
 $('.my_frame').magnifyingFrame({
   'interval' : 12000,
-    <span>/* interval between image shifts */</span>
-  'css_transition_speed' : '0.7s',
-    <span>/* speed of blurring transition */</span>
+    <span>/* interval between image shifts, in milliseconds */</span>
+  'css_transition_speed' : 700,
+    <span>/* speed of blurring transition, in milliseconds */</span>
   'width' : null,
   'height' : null
     <span>/* optional, but must be declared if the value is a percentage */</span>
@@ -70,8 +70,8 @@ $('.my_frame').magnifyingFrame({
 	</ul>
 	
 
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script type="text/javascript" src="js/libs/jquery.js"><\/script>')</script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script type="text/javascript" src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
   <script type="text/javascript" src="js/stackBlur.js"></script>
   <script type="text/javascript" src="js/plugins.js"></script>
   <script type="text/javascript" src="js/jquery.blurryTransition.js"></script>

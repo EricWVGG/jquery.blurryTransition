@@ -50,7 +50,7 @@
 
     var properties = $.extend({
       'interval' : 12000,
-      'css_transition_speed' : '0.7s',
+      'css_transition_speed' : 700,
       'width' : null,
       'height' : null
     }, arguments);
@@ -77,6 +77,9 @@
                 width : properties.width,
                 height : properties.height,
               });
+            // translate speed to CSS compatible speed
+              properties.css_transition_speed = properties.css_transition_speed / 1000;
+              console.log(properties.css_transition_speed);
             // create list wrapper
               $list.wrap('<div class="blurryTransition_wrapper"/>');
               $('.blurryTransition_wrapper').css({
@@ -105,14 +108,13 @@
                     });
                     offset = crop_image_to_screen(adjusted_size, $list);
                     var side = offset.side;
-                    $(n).css(offset.side, offset.amount)
-                      .css({ 
+                    $(n).css({ 
                         'margin' : 0,
                         'padding' : 0,
                         'position' : 'absolute',
                         'top' : '0px',
                         'z-index' : z_index,
-                      })
+                      }).css(offset.side, offset.amount)
                       .addClass('blurryTransition_frame')
                       .find('img').attr('id', 'blurryTransition_canvas_'+i);
                     z_index++;
@@ -128,19 +130,20 @@
                     'width' : adjusted_size.x + 'px !important',
                     'height' : adjusted_size.y + 'px !important',
                     '-webkit-transition-property' : 'opacity',
-                    '-webkit-transition-duration' : properties.css_transition_speed,
+                    '-webkit-transition-duration' : (properties.css_transition_speed * 0.8) + 's',
                     '-webkit-transition-timing-function' : 'ease-out',
                     'z-index' : z_index,
                     'position' : 'absolute',
                     'opacity' : 0,
                   }).css(offset.side, offset.amount);
                   $list.before($canvas);
-                // set up second canvas
+                // set up second canvas, higher Z and runs a skosh slower
                   $canvas_2 = $canvas.clone();
                   $canvas_2.attr({
                     id : 'blurryTransition_canvas_c2',
                   }).css({
                     'z-index' : z_index + 1,
+                    '-webkit-transition-duration' : (properties.css_transition_speed) + 's',
                   });
                   $list.before($canvas_2);
                 
@@ -191,22 +194,21 @@
             if(destination_frame > $list.find('li').length) b = 0;
       			stackBlurImage( 'blurryTransition_canvas_'+destination_frame, 'blurryTransition_canvas_c2', 40, false );
           // "blur" the current image (fade in its blurred canvas)
-          $('#blurryTransition_canvas_c1').removeClass('fast').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
+          $('#blurryTransition_canvas_c1').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
             // hide the current image
             $list.find('li:nth-child('+(cycle_index+1)+')').css('opacity', 0);
             // simultaneously fade out that blurred canvas…
             $('#blurryTransition_canvas_c1').unbind().css('opacity', 0);
             // … and fade in the new blurred image canvas
-            $('#blurryTransition_canvas_c2').removeClass('slow').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
+            $('#blurryTransition_canvas_c2').bind('webkitTransitionEnd oTransitionEnd transitionend MSTransitionEnd transitionend MSTransitionEnd', function() {
               $('#blurryTransition_canvas_c2').unbind();
               // unhide the new image
               $list.find('li:nth-child('+(destination_frame+1)+')').css('opacity', 1);
     					// and finally fade out the new blurred image canvas
-    					$('#blurryTransition_canvas_c2').addClass('slow').css('opacity', 0);
+    					$('#blurryTransition_canvas_c2').css('opacity', 0);
               cycle_index = destination_frame;
             }).css('opacity', 1);
           }).css('opacity', 1);
-// todo: optional simualtenous mode?
         }
       };
   

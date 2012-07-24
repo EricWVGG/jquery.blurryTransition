@@ -71,12 +71,6 @@ td { vertical-align: top; }
       height:100%;
     }
 
-    .fast {
-      -webkit-transition-duration: 0s !important;
-    }
-    .slow {
-      -webkit-transition-duration: 2s !important;
-    }
     header {
       position:absolute;
       z-index:1000;
